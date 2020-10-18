@@ -1,0 +1,12 @@
+---
+title: Replays
+---
+- Touhou 3
+  - [Rikako; 1CC Normal]() (I'll add link later)
+- Touhou 9
+  - [Aya; 1CC Hard](./touhou/th9_01.rpy)
+- Touhou 10
+  - [ReimuA, 1CC Normal](./touhou/th10_03.rpy)
+  - [ReimuB, 1CC Normal](./touhou/th10_02.rpy)
+  - [ReimuC, 1CC Normal](./touhou/th10_01.rpy)
+  - [MarisaA, 1CC Normal](./touhou/th10_04.rpy)
