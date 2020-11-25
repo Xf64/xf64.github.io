@@ -1,12 +1,12 @@
 html {
   line-height: 1.2;
-  font-size: 18px;
+  font-size: 20px;
   color: #1a1a1a;
   background-color: #fdfdfd;
 }
 body {
   margin: 0 auto;
-  max-width: 50em;
+  max-width: 45em;
   hyphens: auto;
   word-wrap: break-word;
 }
