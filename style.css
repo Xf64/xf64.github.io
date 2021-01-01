@@ -9,3 +9,12 @@ body {
 h1,h2,h3 {
 	line-height:1.2;
 }
+
+table {
+  border: 1px solid;
+}
+
+td {
+  text-align: center;
+  border: 1px solid;
+}
