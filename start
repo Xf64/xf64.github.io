@@ -1,7 +1,7 @@
 #!/bin/sh
 ROOTFS_URL=https://alpha.de.repo.voidlinux.org/live/current/void-x86_64-ROOTFS-20191109.tar.xz
 ESSENTIAL_SOFT="opendoas git dhcpcd";
-USERSPACE_SOFT="xorg vim cmus lf zathura dmenu curl jq base-devel tcc go dunst firefox kpcli youtube-dl";
+USERSPACE_SOFT="xorg vim cmus lf zathura dmenu curl jq dunst firefox kpcli youtube-dl";
 DEV_SOFT="go tcc base-devel";
 TEXLIVE="texlive-most texlive-lang";
 
@@ -34,16 +34,6 @@ title() {
 welcome() {
    title "start - installation script";
 }
-prepchroot() {
-   title "CHROOT";
-   mount --rbind /sys /mnt/sys && mount --make-rslave /mnt/sys;
-   mount --rbind /dev /mnt/dev && mount --make-rslave /mnt/dev;
-   mount --rbind /proc /mnt/proc && mount --make-rslave /mnt/proc;
-
-   cp /etc/resolv.conf /mnt/etc;
-
-   PS1='(chroot) # ' chroot /mnt /bin/bash; # HAHAHAHAHAHAHAHAHAHAHAHAHAHAHA, that is funny.
-}
 installbasesystem() {
    title "INSTALL BASE SYSTEM PACKAGE";
    xbps-install -Suy xbps;
@@ -57,6 +47,7 @@ passwdset() {
 }
 hostnameset() {
    title "SET HOSTNAME";
+   printf 'Type hostname: '
    read -r HOSTNAME ;
    echo "$HOSTNAME" > /etc/hostname;
 }
@@ -67,12 +58,8 @@ setlocale() {
 }
 genfstab() {
    title "GEN FSTAB";
-   grep -v 'cgroup' /proc/mounts | \
-   grep -v 'sysfs' | \
-   grep -v 'proc' | \
-   grep -v 'tmpfs' | \
-   grep -v 'securityfs' | \
-   grep -v 'devpts' >> /etc/fstab;
+   grep -v -e 'cgroup' -e 'sysfs' -e 'proc' -e 'tmpfs' -e 'securityfs' -e 'devpts' /proc/mounts \
+      >> /etc/fstab;
 }
 installgrub() {
    title "INSTALL GRUB";
@@ -80,35 +67,55 @@ installgrub() {
    printf "Where to install GRUB: ";
    read -r GRUBINSTALL;
    grub-install "$GRUBINSTALL";
-}
-installsoft() {
-   title "INSTALL USERSPACE SOFTWARE";
-   xbps-install -y $ESSENTIAL_SOFT $USERSPACE_SOFT;
-}
-installtexlive() {
-   title "INSTALL TEXLIVE";
-   xbps-install -y $TEXLIVE;
-}
-installdev() {
-   title "INSTALL BASE DEVEL";
-   printf "install base devel and other compilers[Y/n]:"
-   read -r INSTALLDEV;
-   if choice "$INSTALLDEV"; then
-      xbps-install -y $DEV_SOFT
-   fi
+   grub-mkconfig -o /boot/grub/grub.cfg;
 }
 setupdoas() {
    title "SETUP DOAS";
    echo "permit :wheel" > /etc/doas.conf
 }
 createuser() {
-   title "CREATE AND SWITCH TO USER";    
+   title "CREATE USER";    
    printf "Enter username: ";
    read -r USERNAME; 
    useradd -m -G wheel "$USERNAME"; 
    export USERNAME;
    passwd "$USERNAME";
-   su - "$USERNAME";
+}
+sanecclink() {
+   title "LINK /bin/cc to SANE COMPILER";
+   rm /bin/cc;
+   ln -s /bin/tcc /bin/cc;
+}
+finale() {
+   title "EVERYTHING IS DONE! GOODBYE." 
+}
+
+# ROOT CONFIGURATION
+welcome;
+installbasesystem;
+hostnameset;
+setlocale;
+passwdset;
+genfstab;
+if choice "Install GRUB"; then installgrub; fi
+title "INSTALL SOFTWARE";
+if choice "Install Essential and Userspace software"; then installsoft; fi
+if choice "Install Texlive packages"; then installtexlive; fi
+if choice "Install base-devel and other toolchains"; then installdev; fi
+if choice "Link TCC to /bin/cc"; then sanecclink; fi
+setupdoas;
+
+# USER CONFIGURATION
+createuser;
+doas -u "$USERNAME" /bin/sh << EOF
+choice() {
+   PROMPT="$1";
+   printf "%s[Y/n]: " "$PROMPT";
+   read -r CHOICE;
+   case "$CHOICE" in
+      [Yy]* ) true  ;;
+      [Nn]* ) false ;;
+   esac
 }
 dotfiles() {
    title "DOTFILES CONFIGURATION"; 
@@ -128,24 +135,7 @@ installsuckless() {
 	makesoft dwm;
 	makesoft st;
 }
-finale() {
-   title "EVERYTHING IS DONE! GOODBYE." 
-}
-
-cd /mnt || exit;
-welcome;
-installbasesystem;
-hostnameset;
-setlocale;
-passwdset;
-genfstab;
-if choice "Install GRUB"; then installgrub; fi
-if choice "Install Essential and Userspace software"; then installsoft; fi
-if choice "Install Texlive packages"; then installtexlive; fi
-if choice "Install base-devel and other toolchains"; then installdev; fi
-setupdoas;
-createuser;
 if choice "Install Dotfiles"; then dotfiles; fi
 if choice "Install Suckless software"; then installsuckless; fi
-exit;
-finale
+EOF
+finale;
