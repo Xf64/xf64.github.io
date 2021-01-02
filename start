@@ -18,7 +18,6 @@ choice() {
 }
 
 title() {
-   set +x;
    TITLE=$*; 
    TITLELEN=$(echo "$TITLE" | wc -m);
    
@@ -31,17 +30,18 @@ title() {
    printlen;
    echo "$TITLE";
    printlen;
-   set -x;
 }
 welcome() {
    title "start - installation script";
 }
 installbasesystem() {
    title "INSTALL BASE SYSTEM PACKAGE";
+   set -x;
    xbps-install -Suy xbps;
    xbps-install -uy;
    xbps-install -y base-system;
    xbps-remove -y base-voidstrap;
+   set +x;
 }
 passwdset() {
    title "SET ROOT PASSWORD"; 
@@ -60,20 +60,26 @@ setlocale() {
 }
 genfstab() {
    title "GEN FSTAB";
+   set -x;
    grep -v -e 'cgroup' -e 'sysfs' -e 'proc' -e 'tmpfs' -e 'securityfs' -e 'devpts' /proc/mounts \
       >> /etc/fstab;
+   set +x;
 }
 installgrub() {
    title "INSTALL GRUB";
    xbps-install -y grub;
    printf "Where to install GRUB: ";
    read -r GRUBINSTALL;
+   set -x;
    grub-install "$GRUBINSTALL";
    grub-mkconfig -o /boot/grub/grub.cfg;
+   set +x;
 }
 setupdoas() {
    title "SETUP DOAS";
+   set -x;
    echo "permit :wheel" > /etc/doas.conf
+   set +x;
 }
 createuser() {
    title "CREATE USER";    
@@ -85,8 +91,10 @@ createuser() {
 }
 sanecclink() {
    title "LINK /bin/cc to SANE COMPILER";
+   set -x;
    rm /bin/cc;
    ln -s /bin/tcc /bin/cc;
+   set +x
 }
 finale() {
    title "EVERYTHING IS DONE! GOODBYE." 
@@ -121,18 +129,22 @@ choice() {
 }
 dotfiles() {
    title "DOTFILES CONFIGURATION"; 
+   set -x;
 	git clone "https://github.com/ykmv/dotfiles";
 	cd ~/dotfiles;
 	sh symlinks.sh;
+   set +x;
 }
 installsuckless() {
    title "INSTALL SUCKLESS SOFTWARE";
 	mkdir ~/suckless;
 	makesoft() {
+      set -x;
 	   git clone https://github.com/ykmv/"$1" ~/suckless/"$1";
 	   cd ~/suckless/"$1";
 	   make;
 	   doas make install;
+      set +x;
 	}
 	makesoft dwm;
 	makesoft st;
