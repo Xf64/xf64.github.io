@@ -99,9 +99,9 @@ passwdset;
 genfstab;
 if choice "Install GRUB"; then installgrub; fi
 title "INSTALL SOFTWARE";
-if choice "Install Essential and Userspace software"; then installsoft; fi
-if choice "Install Texlive packages"; then installtexlive; fi
-if choice "Install base-devel and other toolchains"; then installdev; fi
+if choice "Install Essential and Userspace software"; then xbps-install $ESSENTIAL_SOFT $USERSPACE_SOFT; fi
+if choice "Install Texlive packages"; then $TEXLIVE; fi
+if choice "Install base-devel and other toolchains"; then $DEV_SOFT; fi
 if choice "Link TCC to /bin/cc"; then sanecclink; fi
 setupdoas;
 
