@@ -18,6 +18,7 @@ choice() {
 }
 
 title() {
+   set +x;
    TITLE=$*; 
    TITLELEN=$(echo "$TITLE" | wc -m);
    
@@ -30,6 +31,7 @@ title() {
    printlen;
    echo "$TITLE";
    printlen;
+   set -x;
 }
 welcome() {
    title "start - installation script";
@@ -96,7 +98,7 @@ installbasesystem;
 hostnameset;
 setlocale;
 passwdset;
-genfstab;
+if choice "Generate FSTAB"; then genfstab; fi
 if choice "Install GRUB"; then installgrub; fi
 title "INSTALL SOFTWARE";
 if choice "Install Essential and Userspace software"; then xbps-install $ESSENTIAL_SOFT $USERSPACE_SOFT; fi
