@@ -41,7 +41,7 @@ getrootfs() {
 	tar xvf void-*;
 	rm void-*;	
 }
-startchroot() {
+prepchroot() {
    title "CHROOT";
    mount --rbind /sys /mnt/sys && mount --make-rslave /mnt/sys;
    mount --rbind /dev /mnt/dev && mount --make-rslave /mnt/dev;
@@ -49,7 +49,7 @@ startchroot() {
 
    cp /etc/resolv.conf /mnt/etc;
 
-   PS1='(chroot) # ' chroot /mnt /bin/bash;
+   PS1='(chroot) # ' chroot /mnt /bin/bash; # HAHAHAHAHAHAHAHAHAHAHAHAHAHAHA, that is funny.
 }
 installbasesystem() {
    title "INSTALL BASE SYSTEM PACKAGE";
@@ -139,7 +139,8 @@ installsuckless() {
 cd /mnt || exit;
 welcome;
 getrootfs;
-startchroot;
+prepchroot;
+PS1='(chroot) # ' chroot /mnt /bin/bash << EOF # HAHAHAHAHAHAHAHAHAHAHAHAHAHAHA, that is funny.
 installbasesystem;
 hostnameset;
 setlocale;
@@ -153,7 +154,7 @@ setupdoas;
 createuser;
 if choice "Install Dotfiles"; then dotfiles; fi
 if choice "Install Suckless software"; then installsuckless; fi
-
+EOF
 exit;
 exit;
 reboot;
