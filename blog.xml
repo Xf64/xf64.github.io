@@ -3,7 +3,7 @@
    <channel>
       <title>RSS test</title>
       <description>RSS test.</description>
-      <link>https://ykmv.github.io</link>
+      <link>https://ykmv.github.io/blog.xml</link>
       <ttl>1800</ttl>
       <atom:link href="https://ykmv.github.io" rel="self" type="application/rss+xml"/>
       <item>
