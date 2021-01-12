@@ -3,14 +3,14 @@
    <channel>
       <title>RSS test</title>
       <description>RSS test.</description>
-      <link>https://ykmv.github.io/blog.xml</link>
+      <link>https://ykmv.github.io</link>
       <ttl>1800</ttl>
       <atom:link href="https://ykmv.github.io" rel="self" type="application/rss+xml"/>
       <item>
          <title>12.01.2021: RSS test</title>
          <description>RSS test.</description>
-         <link>https://ymkv.github.io/rss_test.html</link>
-         <guid isPermaLink="true">https://ymkv.github.io/rss_test.html</guid>
+         <link>https://ykmv.github.io/rss_test.html</link>
+         <guid isPermaLink="true">https://ykmv.github.io/rss_test.html</guid>
          <pubDate>Tue, 12 Jan 2021 11:24:00 +0007</pubDate>
       </item>
    </channel>
