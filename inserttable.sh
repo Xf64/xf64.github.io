@@ -4,6 +4,8 @@
 
 FILE="$1"
 TABLE="$2"
+TAG_START="$3"
+TAG_END="$4"
 
 if [ -z "$FILE" ]; then
    echo "csvtohtml: No HTML file provided";
@@ -14,8 +16,8 @@ if [ -z "$TABLE" ]; then
    exit;
 fi
 
-FIRSTLINE=$(awk '/<!--insert_table--!>/{print NR}' "$FILE") 
-SECONDLINE=$(awk '/<!--end_of_table--!>/{print NR}' "$FILE") 
+FIRSTLINE=$(awk "/$TAG_START/{print NR}" "$FILE") 
+SECONDLINE=$(awk "/$TAG_END/{print NR}" "$FILE") 
 
 
 addtable() {
