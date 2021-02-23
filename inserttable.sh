@@ -15,6 +15,14 @@ if [ -z "$TABLE" ]; then
    echo "csvtohtml: No table file provided";
    exit;
 fi
+if [ -z "$TAG_START" ]; then
+   echo "csvtohtml: No start tag provided";
+   exit;
+fi
+if [ -z "$TAG_END" ]; then
+   echo "csvtohtml: No end tag provided";
+   exit;
+fi
 
 FIRSTLINE=$(awk "/$TAG_START/{print NR}" "$FILE") 
 SECONDLINE=$(awk "/$TAG_END/{print NR}" "$FILE") 
@@ -31,6 +39,6 @@ addtable() {
    awk "NR==$SECONDLINE,NR==EOF" "$FILE"
 }
 
-addtable > "$FILE".new;
-cp "$FILE".new "$FILE";
-rm "$FILE".new;
+addtable > "$1".new
+mv "$1".new "$1"
+rm "$1".new
