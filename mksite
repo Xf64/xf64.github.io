@@ -1,0 +1,14 @@
+#!/bin/sh
+
+CSS="./data/style.css"
+
+pages() {
+   for f in ./data/pages/*; do
+      FILENAME=${f##*/}
+      FILENAME=${FILENAME%%.md}
+      echo "$FILENAME";
+      pandoc -s "$f" --css "$CSS" -o "$FILENAME".html
+   done
+}
+
+pages
